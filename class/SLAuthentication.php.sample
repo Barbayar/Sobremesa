@@ -1,0 +1,20 @@
+<?php
+class SLAuthentication
+{
+    public static function authenticate($userName, $password)
+    {
+        return true;
+    }
+
+    public static function getUserInformation($userName)
+    {
+        return array(
+            'email' => 'jessica@alba.com',
+            'displayName' => 'Jessica Alba',
+            'data' => json_encode(array(
+                'bio' => 'an actress',
+                'birthday' => 'April 28, 1981',
+            )),
+        );
+    }
+}
