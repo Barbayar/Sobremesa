@@ -3,6 +3,7 @@ class SLErrorMessages
 {
     const NOT_AUTHORIZED = 'not logged in';
     const AUTHORIZATION_FAILED = 'authorization failed';
+    const PERMISSION_ERROR = 'you have no permission';
     const INVALID_VERSION = 'invalid version';
     const INVALID_RESOURCE = 'invalid resource';
     const INVALID_RESOURCE_ID = 'invalid resource id';

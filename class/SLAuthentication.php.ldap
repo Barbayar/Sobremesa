@@ -1,0 +1,63 @@
+<?php
+class SLAuthentication
+{
+    const LDAP_SERVER = '';
+    const LDAP_SUFFIX = '';
+    const LDAP_BASE_DN = '';
+
+    public static function authenticate($username, $password)
+    {
+        $userInformation = null;
+
+        $ldapConnection = ldap_connect(self::LDAP_SERVER);
+        if ($ldapConnection === false) {
+            throw new Exception('Error: couldn\'t connect LDAP server');
+        }
+
+        ldap_set_option($ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
+        ldap_set_option($ldapConnection, LDAP_OPT_REFERRALS, 0);
+        $result = @ldap_bind($ldapConnection, $username . self::LDAP_SUFFIX, $password);
+
+        if (ldap_errno($ldapConnection) === -1) {
+            $error = ldap_error($ldapConnection);
+
+            throw new Exception("Error: $error");
+        }
+
+        if ($result) {
+            $fields = array(
+                'displayname',
+                'mail',
+            );
+
+            $result = ldap_search($ldapConnection, self::LDAP_BASE_DN, "(&(objectCategory=person)(sAMAccountName=$username))", $fields);
+            $entries = ldap_get_entries($ldapConnection, $result);
+
+            $email = $entries[0]['mail'][0];
+            $displayName = $entries[0]['displayname'][0];
+            $data = json_encode(array(
+                'gravatarURL' => 'http://www.gravatar.com/avatar/' . md5($email),
+            ));
+
+            $userInformation = array(
+                'email' => $email,
+                'displayName' => $displayName,
+                'data' => $data,
+            );
+        }
+
+        ldap_close($ldapConnection);
+
+        return $userInformation;
+    }
+
+
+    public static function getMe()
+    {
+        if (isset($_SESSION['me'])) {
+            return $_SESSION['me'];
+        }
+
+        return null;
+    }
+}

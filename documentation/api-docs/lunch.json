@@ -1,0 +1,526 @@
+{
+    "basePath": "/api/v1",
+    "swaggerVersion": "1.2",
+    "apiVersion": "1.0.0",
+    "resourcePath": "lunch",
+    "apis": [
+        {
+            "path": "/lunch",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "gets a lunch by lunch id",
+                    "nickname": "get",
+                    "type": "Lunch",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "lunchId",
+                            "type": "integer",
+                            "required": true,
+                            "description": "lunch id"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 404,
+                            "message": "invalid lunch id"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns a lunch"
+                },
+                {
+                    "method": "POST",
+                    "summary": "updates a lunch",
+                    "nickname": "post",
+                    "type": "boolean",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "lunchId",
+                            "type": "integer",
+                            "required": true,
+                            "description": "lunch id"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "theme",
+                            "type": "string",
+                            "required": true,
+                            "description": "new theme"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "location",
+                            "type": "string",
+                            "required": true,
+                            "description": "new location"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "description",
+                            "type": "string",
+                            "required": true,
+                            "description": "new description"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "beginTime",
+                            "type": "integer",
+                            "required": true,
+                            "description": "new begin time"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "endTime",
+                            "type": "integer",
+                            "required": true,
+                            "description": "new end time"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "minPeople",
+                            "type": "integer",
+                            "required": true,
+                            "description": "new minimum number of people"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "maxPeople",
+                            "type": "integer",
+                            "required": true,
+                            "description": "new maximum number of people"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 403,
+                            "message": "has no permission"
+                        },
+                        {
+                            "code": 404,
+                            "message": "invalid lunch id"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns always true"
+                },
+                {
+                    "method": "PUT",
+                    "summary": "updates a lunch",
+                    "nickname": "put",
+                    "type": "integer",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "theme",
+                            "type": "string",
+                            "required": true,
+                            "description": "new theme"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "location",
+                            "type": "string",
+                            "required": true,
+                            "description": "new location"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "description",
+                            "type": "string",
+                            "required": true,
+                            "description": "new description"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "beginTime",
+                            "type": "integer",
+                            "required": true,
+                            "description": "new begin time"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "endTime",
+                            "type": "integer",
+                            "required": true,
+                            "description": "new end time"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "minPeople",
+                            "type": "integer",
+                            "required": true,
+                            "description": "new minimum number of people"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "maxPeople",
+                            "type": "integer",
+                            "required": true,
+                            "description": "new maximum number of people"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns a lunch id"
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "deletes a lunch",
+                    "nickname": "delete",
+                    "type": "boolean",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "lunchId",
+                            "type": "integer",
+                            "required": true,
+                            "description": "lunch id"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 403,
+                            "message": "has no permission"
+                        },
+                        {
+                            "code": 404,
+                            "message": "invalid lunch id"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns always true"
+                }
+            ]
+        },
+        {
+            "path": "/lunch/available",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "gets available lunches",
+                    "nickname": "getAvailable",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Lunch"
+                    },
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns list of lunches"
+                }
+            ]
+        },
+        {
+            "path": "/lunch/byCreatorId",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "gets lunches by creator's user id",
+                    "nickname": "getByCreatorId",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Lunch"
+                    },
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "userId",
+                            "type": "integer",
+                            "required": true,
+                            "description": "creator's user id"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 404,
+                            "message": "invalid user id"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns list of lunches"
+                }
+            ]
+        },
+        {
+            "path": "/lunch/byDate",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "gets lunches by date",
+                    "nickname": "getByDate",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Lunch"
+                    },
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "date",
+                            "type": "integer",
+                            "required": true,
+                            "description": "a date formatted YYYYMMDD"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns list of lunches"
+                }
+            ]
+        },
+        {
+            "path": "/lunch/joined",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "gets joined lunches",
+                    "nickname": "getJoined",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Lunch"
+                    },
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns list of lunches"
+                }
+            ]
+        }
+    ],
+    "models": {
+        "Lunch": {
+            "id": "Lunch",
+            "properties": {
+                "lunchId": {
+                    "description": "lunch id",
+                    "type": "integer"
+                },
+                "theme": {
+                    "description": "lunch theme",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "location",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "description",
+                    "type": "string"
+                },
+                "beginTime": {
+                    "description": "begin time in unix timestamp",
+                    "type": "integer"
+                },
+                "endTime": {
+                    "description": "end time in unix timestamp",
+                    "type": "integer"
+                },
+                "minPeople": {
+                    "description": "minimum number of people",
+                    "type": "integer"
+                },
+                "maxPeople": {
+                    "description": "maximum number of people",
+                    "type": "integer"
+                },
+                "createdTime": {
+                    "description": "created time in unix timestamp",
+                    "type": "integer"
+                },
+                "userId": {
+                    "description": "creator's user id",
+                    "type": "integer"
+                },
+                "displayName": {
+                    "description": "creator's display name",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "creator's other data",
+                    "type": "string"
+                },
+                "members": {
+                    "description": "list of members",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Member"
+                    }
+                },
+                "comments": {
+                    "description": "list of comments",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Comment"
+                    }
+                }
+            },
+            "required": [
+                "beginTime",
+                "comments",
+                "createdTime",
+                "data",
+                "description",
+                "displayName",
+                "endTime",
+                "location",
+                "lunchId",
+                "maxPeople",
+                "members",
+                "minPeople",
+                "theme",
+                "userId"
+            ]
+        },
+        "Member": {
+            "id": "Member",
+            "properties": {
+                "userId": {
+                    "description": "user id",
+                    "type": "integer"
+                },
+                "displayName": {
+                    "description": "display name",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "other data",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "data",
+                "displayName",
+                "userId"
+            ]
+        },
+        "Comment": {
+            "id": "Comment",
+            "properties": {
+                "commentId": {
+                    "description": "comment id",
+                    "type": "integer"
+                },
+                "content": {
+                    "description": "comment",
+                    "type": "string"
+                },
+                "createdTime": {
+                    "description": "created time in unix timestamp",
+                    "type": "integer"
+                },
+                "userId": {
+                    "description": "author's user id",
+                    "type": "integer"
+                },
+                "displayName": {
+                    "description": "author's display name",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "author's other data",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "commentId",
+                "content",
+                "createdTime",
+                "data",
+                "displayName",
+                "userId"
+            ]
+        }
+    }
+}

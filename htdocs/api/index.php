@@ -1,14 +1,22 @@
 <?php
-require_once('../vendor/autoload.php');
+require_once('../../vendor/autoload.php');
 
-$classes = glob('../class/*.php');
+$classes = glob('../../class/*.php');
 foreach ($classes as $class) {
     require_once($class);   
 }
 
-ini_set('error_log', '../data/error.log');
+date_default_timezone_set('UTC');
+ini_set('error_log', '../../data/error.log');
+ini_set('session.cookie_lifetime', 604800); // 7 days
+ini_set('session.gc_maxlifetime', 604800); // 7 days
+session_start();
+
 $app = new \Slim\Slim();
 $app->get('/:version/:uri+', 'main');
+$app->post('/:version/:uri+', 'main');
+$app->put('/:version/:uri+', 'main');
+$app->delete('/:version/:uri+', 'main');
 $app->run();
 
 function response($httpResponseCode, $result)
@@ -19,20 +27,35 @@ function response($httpResponseCode, $result)
     )));
 }
 
+function isAuthenticationRequired($uri)
+{
+    $resourceName = strtolower($uri[0]);
+
+    if ($resourceName !== 'login' && $resourceName !== 'logout') {
+        return true;
+    }
+
+    return false;
+}
+
 function main($version, $uri)
 {
     global $app;
     $action = strtolower($app->request->getMethod());
 
-    if (!file_exists("../api/$version")) {
+    if (!file_exists("../../api/$version")) {
         response(SLHTTPResponseCodes::BAD_REQUEST, SLErrorMessages::INVALID_VERSION . " ($version)");
+    }
+
+    if (isAuthenticationRequired($uri) && is_null(SLAuthentication::getMe())) {
+        response(SLHTTPResponseCodes::UNAUTHORIZED, SLErrorMessages::NOT_AUTHORIZED);
     }
 
     if (count($uri) % 2 === 0) {
         $action .= ucfirst(array_pop($uri));
     }
 
-    $resourcePath = "../api/$version";
+    $resourcePath = "../../api/$version";
     $constructParameters = array();
     while (count($uri) !== 1) {
         $resourceName = ucfirst(array_shift($uri));

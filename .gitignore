@@ -1,7 +1,6 @@
-data/chatwork*
 data/database*
+data/error.log
 class/SLAuthentication.php
-class/SLConfig.php
 class/SLNotification.php
 composer.phar
 composer.lock

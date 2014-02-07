@@ -1,15 +1,25 @@
 <?php
-class SLTableMember extends SLTable
+class SLTableComment extends SLTable
 {
-    public function has($lunchId, $userId)
+    public function has($commentId)
     {
         $result = $this->execute(
             'has',
             array(
-                'AND' => array(
-                    'lunchId' => $lunchId,
-                    'userId' => $userId,
-                ),
+                'commentId' => $commentId,
+            )
+        );
+
+        return $result;
+    }
+
+    public function get($commentId)
+    {
+        $result = $this->execute(
+            'get',
+            '*',
+            array(
+                'commentId' => $commentId,
             )
         );
 
@@ -23,53 +33,53 @@ class SLTableMember extends SLTable
             '*',
             array(
                 'lunchId' => $lunchId,
+                'ORDER' => 'commentId',
             )
         );
 
         return $result;
     }
 
-    public function getByUserId($userId)
+    public function update($commentId, $content)
     {
         $result = $this->execute(
-            'select',
-            '*',
+            'update',
             array(
-                'userId' => $userId,
+                'content' => $content,
+            ),
+            array(
+                'commentId' => $commentId,
             )
         );
 
         return $result;
     }
 
-    public function add($lunchId, $userId)
+    public function add($lunchId, $userId, $content)
     {
         $result = $this->execute(
             'insert',
             array(
                 'lunchId' => $lunchId,
                 'userId' => $userId,
+                'content' => $content,
             )
         );
 
         return $result;
     }
 
-    public function remove($lunchId, $userId)
+    public function remove($commentId)
     {
         $result = $this->execute(
             'delete',
             array(
-                'AND' => array(
-                    'lunchId' => $lunchId,
-                    'userId' => $userId,
-                ),
+                'commentId' => $commentId,
             )
         );
 
         return $result;
     }
-
 
     public function removeByLunchId($lunchId)
     {

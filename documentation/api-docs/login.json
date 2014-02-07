@@ -1,0 +1,74 @@
+{
+    "basePath": "/api/v1",
+    "swaggerVersion": "1.2",
+    "apiVersion": "1.0.0",
+    "resourcePath": "login",
+    "apis": [
+        {
+            "path": "/login",
+            "operations": [
+                {
+                    "method": "POST",
+                    "summary": "logs in",
+                    "nickname": "post",
+                    "type": "Me",
+                    "parameters": [
+                        {
+                            "paramType": "query",
+                            "name": "username",
+                            "type": "string",
+                            "required": true,
+                            "description": "user name"
+                        },
+                        {
+                            "paramType": "query",
+                            "name": "password",
+                            "type": "string",
+                            "required": true,
+                            "description": "password"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "invalid user name or password"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns user information"
+                }
+            ]
+        }
+    ],
+    "models": {
+        "Me": {
+            "id": "Me",
+            "properties": {
+                "userId": {
+                    "description": "user id",
+                    "type": "integer"
+                },
+                "displayName": {
+                    "description": "display name",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "other data",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "data",
+                "displayName",
+                "userId"
+            ]
+        }
+    }
+}

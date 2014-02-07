@@ -1,0 +1,147 @@
+{
+    "basePath": "/api/v1",
+    "swaggerVersion": "1.2",
+    "apiVersion": "1.0.0",
+    "resourcePath": "member",
+    "apis": [
+        {
+            "path": "/lunch/{lunchId}/member",
+            "operations": [
+                {
+                    "method": "PUT",
+                    "summary": "joins a lunch",
+                    "nickname": "put",
+                    "type": "boolean",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "lunchId",
+                            "type": "integer",
+                            "required": true,
+                            "description": "lunch id"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 404,
+                            "message": "invalid lunch id"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns always true"
+                },
+                {
+                    "method": "DELETE",
+                    "summary": "cancels joining a lunch",
+                    "nickname": "delete",
+                    "type": "boolean",
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "lunchId",
+                            "type": "integer",
+                            "required": true,
+                            "description": "lunch id"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 404,
+                            "message": "invalid lunch id"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns always true"
+                }
+            ]
+        },
+        {
+            "path": "/lunch/{lunchId}/member/all",
+            "operations": [
+                {
+                    "method": "GET",
+                    "summary": "gets all members",
+                    "nickname": "getAll",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Member"
+                    },
+                    "parameters": [
+                        {
+                            "paramType": "path",
+                            "name": "lunchId",
+                            "type": "integer",
+                            "required": true,
+                            "description": "lunch id"
+                        }
+                    ],
+                    "responseMessages": [
+                        {
+                            "code": 400,
+                            "message": "invalid parameters"
+                        },
+                        {
+                            "code": 401,
+                            "message": "not logged in"
+                        },
+                        {
+                            "code": 404,
+                            "message": "invalid lunch id"
+                        },
+                        {
+                            "code": 500,
+                            "message": "an internal error occured"
+                        }
+                    ],
+                    "notes": "returns list of members"
+                }
+            ]
+        }
+    ],
+    "models": {
+        "Member": {
+            "id": "Member",
+            "properties": {
+                "userId": {
+                    "description": "user id",
+                    "type": "integer"
+                },
+                "displayName": {
+                    "description": "display name",
+                    "type": "string"
+                },
+                "data": {
+                    "description": "other data",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "data",
+                "displayName",
+                "userId"
+            ]
+        }
+    }
+}

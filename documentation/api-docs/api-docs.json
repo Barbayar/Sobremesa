@@ -1,0 +1,21 @@
+{
+    "apiVersion": "1.0.0",
+    "swaggerVersion": "1.2",
+    "apis": [
+        {
+            "path": "/comment.json"
+        },
+        {
+            "path": "/login.json"
+        },
+        {
+            "path": "/logout.json"
+        },
+        {
+            "path": "/lunch.json"
+        },
+        {
+            "path": "/member.json"
+        }
+    ]
+}

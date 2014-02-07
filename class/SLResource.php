@@ -35,7 +35,7 @@ abstract class SLResource
         }
 
         $tableClass = 'SLTable' . ucfirst($tableName);
-        require_once("../table/$tableClass.php");
+        require_once("../../table/$tableClass.php");
 
         $tableKlass = new ReflectionClass($tableClass);
         $table = $tableKlass->newInstanceArgs(array($tableName));

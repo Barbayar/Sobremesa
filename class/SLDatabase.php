@@ -2,15 +2,16 @@
 class SLDatabase
 {
     private static $_instance = null;
-    private static $_databasePath = '../data/database.sqlite';
+    private static $_databasePath = '../../data/database.sqlite';
     private static $_createTableQueries = array(
         'CREATE TABLE lunch (
             lunchId INTEGER PRIMARY KEY,
+            userId INTEGER NOT NULL,
             theme TEXT NOT NULL,
             location TEXT NOT NULL,
             description TEXT NOT NULL,
-            beginTime DATETIME NOT NULL,
-            endTime DATETIME NOT NULL,
+            beginTime INTEGER NOT NULL,
+            endTime INTEGER NOT NULL,
             minPeople INTEGER NOT NULL,
             maxPeople INTEGER NOT NULL,
             createdTime DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -18,21 +19,21 @@ class SLDatabase
         )',
         'CREATE TABLE comment (
             commentId INTEGER PRIMARY KEY,
-            userId INTEGER NOT NULL,
             lunchId INTEGER NOT NULL,
+            userId INTEGER NOT NULL,
             content TEXT NOT NULL,
             createdTime DATETIME DEFAULT CURRENT_TIMESTAMP,
             modifiedTime DATETIME DEFAULT CURRENT_TIMESTAMP
         )',
         'CREATE TABLE member (
-            id INTEGER PRIMARY KEY,
             lunchId INTEGER NOT NULL,
             userId INTEGER NOT NULL,
-            createdTime DATETIME DEFAULT CURRENT_TIMESTAMP
+            createdTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (lunchId, userId)
         )',
         'CREATE TABLE user (
             userId INTEGER PRIMARY KEY,
-            userName TEXT NOT NULL,
+            username TEXT NOT NULL,
             email TEXT NOT NULL,
             displayName TEXT NOT NULL,
             data TEXT NOT NULL,
@@ -72,11 +73,11 @@ class SLDatabase
             self::$_instance->query($createTableQuery);
         }
 
-        self::_createIndex('lunch', 'beginTime');
+        self::_createIndex('lunch', 'endTime');
+        self::_createIndex('lunch', 'userId');
         self::_createIndex('comment', 'lunchId');
-        self::_createIndex('member', 'lunchId');
-        self::_createIndex('member', 'userId,lunchId', true);
-        self::_createIndex('user', 'userName', true);
+        self::_createIndex('member', 'userId');
+        self::_createIndex('user', 'username', true);
 
         self::_createModifiedTimeTrigger('lunch', 'lunchId');
         self::_createModifiedTimeTrigger('comment', 'commentId');

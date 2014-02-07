@@ -1,20 +1,30 @@
 <?php
 class SLAuthentication
 {
-    public static function authenticate($userName, $password)
+    public static function authenticate($username, $password)
     {
         return true;
     }
 
-    public static function getUserInformation($userName)
+    public static function getUserInformation($username)
     {
         return array(
             'email' => 'jessica@alba.com',
             'displayName' => 'Jessica Alba',
             'data' => json_encode(array(
+                'gravatarURL' => 'http://www.gravatar.com/avatar/' . md5('jessica@alba.com'),
                 'bio' => 'an actress',
                 'birthday' => 'April 28, 1981',
             )),
         );
+    }
+
+    public static function getMe()
+    {
+        if (isset($_SESSION['me'])) {
+            return $_SESSION['me'];
+        }
+
+        return null;
     }
 }
