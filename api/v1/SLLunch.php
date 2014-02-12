@@ -452,7 +452,7 @@ class SLLunch extends SLResource
      *   path="/lunch",
      *   @SWG\Operation(
      *     method="PUT",
-     *     summary="updates a lunch",
+     *     summary="adds a new lunch",
      *     notes="returns a lunch id",
      *     type="integer",
      *     @SWG\Parameter(

@@ -130,7 +130,7 @@
                 },
                 {
                     "method": "PUT",
-                    "summary": "updates a lunch",
+                    "summary": "adds a new lunch",
                     "nickname": "put",
                     "type": "integer",
                     "parameters": [
