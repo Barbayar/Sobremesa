@@ -1,6 +1,8 @@
 ## slunch
 slunch is a small social lunch service. You can use it in your company or organization to help people to socialize.
 
+Documentation: http://slunch.barbayar.net/documentation
+
 ## Using
 ##### 1. Download
 `git clone git@github.com:Barbayar/slunch.git`<br>
