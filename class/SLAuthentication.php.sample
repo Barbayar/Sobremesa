@@ -3,11 +3,6 @@ class SLAuthentication
 {
     public static function authenticate($username, $password)
     {
-        return true;
-    }
-
-    public static function getUserInformation($username)
-    {
         return array(
             'email' => 'jessica@alba.com',
             'displayName' => 'Jessica Alba',
