@@ -1,5 +1,5 @@
 ## slunch
-slunch is a small social lunching service. You can use it in your company or organization to help people to socialize.
+slunch is a small social lunch service. You can use it in your company or organization to help people to socialize.
 
 ## Using
 ##### 1. Download
