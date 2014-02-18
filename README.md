@@ -3,6 +3,9 @@ Sobremesa is a small social lunch service. You can use it in your company or org
 
 Documentation: http://sobremesa.barbayar.net/documentation
 
+> **sobremesa**<br>
+(n.) the time spent around the table after lunch or dinner, talking to the people you shared the meal with; time to digest and savor both food and friendship
+
 ## Using
 ##### 1. Download
 `git clone git@github.com:Barbayar/Sobremesa.git`<br>
