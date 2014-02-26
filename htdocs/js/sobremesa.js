@@ -77,6 +77,42 @@ var Sobremesa = {
 
         return year + '.' + month.toString().lpad(2) + '.' + day.toString().lpad(2) + ' ' + hours.toString().lpad(2) + ':' + minutes.toString().lpad(2);
     },
+    timestampToReadableString: function(timestamp) {
+        var date = new Date();
+        var timeDifference = Math.abs(date.getTime() / 1000 - timestamp);
+
+        if (timeDifference < 60) {
+            return 'now';
+        }
+
+        if (timeDifference / 60 < 60) {
+            var minutes = Math.floor(timeDifference / 60);
+
+            if (minutes != 1) {
+                return  minutes + ' minutes';
+            }
+
+            return 'a minute';
+        }
+
+        if (timeDifference / 3600 < 24) {
+            var hours = Math.floor(timeDifference / 3600);
+
+            if (hours != 1) {
+                return hours + ' hours';
+            }
+
+            return 'a hour';
+        }
+
+        var days = Math.floor(timeDifference / 86400);
+
+        if (days != 1) {
+            return  days + ' days';
+        }
+
+        return 'a day';
+    },
     alert: function(title, message) {
         if ($('#alertWindow').size() == 0) {
             $("body").append($(' \
