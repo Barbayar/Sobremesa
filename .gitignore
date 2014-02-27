@@ -1,7 +1,14 @@
-data/database*
-data/error.log
+# data folder
+data
+
+# sensitive files (implement yourself)
 class/SLAuthentication.php
 class/SLNotification.php
+
+# composer files
 composer.phar
 composer.lock
 vendor
+
+# IDE files
+.idea
