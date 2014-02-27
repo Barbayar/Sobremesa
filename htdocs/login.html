@@ -21,7 +21,8 @@
             window.location.href = 'index.html';
         }, null, false);
 
-        $('.form-control').bind('keypress', function (event) {
+        $('.form-control').unbind('keypress');
+        $('.form-control').bind('keypress', function(event) {
             if (event.keyCode == 13){
                 login();
             }
@@ -85,7 +86,7 @@
                                 <div class="form-group" id="passwordFormGroup">
                                     <input class="form-control" placeholder="Password" id="password" type="password" value="">
                                 </div>
-                                <a class="btn btn-lg btn-success btn-block" id="loginButton" onClick="login()">Login</a>
+                                <a class="btn btn-lg btn-success btn-block" id="loginButton" onclick="login()">Login</a>
                             </fieldset>
                         </form>
                     </div>

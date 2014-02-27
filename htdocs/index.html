@@ -19,79 +19,98 @@
     <script src="js/handlebars-v1.3.0.js"></script><!-- http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js -->
     <script src="js/sobremesa.js"></script>
 
-    <script id="template-lunches" type="text/x-handlebars-template">
-        <div class="panel-group" id="accordion">
-            {{#each lunches}}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseLunch{{this.lunchId}}" class="">
-                                <i class="fa fa-cutlery fa-fw"></i> {{this.theme}}
-                            </a>
-                        </h4>
+    <script id="template-lunch" type="text/x-handlebars-template">
+        <div class="panel panel-default" id="panelLunch{{lunchId}}">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseLunch{{lunchId}}" class="">
+                        <i class="fa fa-cutlery fa-fw"></i> {{theme}}
+                    </a>
+                    <div class="btn-group pull-right">
+                        {{#isMine this}}
+                            <button type="button" class="btn btn-warning" onclick="showEditLunchForm('{{lunchId}}',
+                                            '{{theme}}', '{{location}}', '{{description}}', '{{beginTime}}',
+                                            '{{endTime}}', '{{minPeople}}', '{{maxPeople}}')">Edit</button>
+                            <button type="button" class="btn btn-danger" onclick="Sobremesa.confirm('Confirmation', 'Do you really want to delete the lunch?', deleteLunch, {{lunchId}})">Delete</button>
+                        {{else}}
+                            {{#isJoined this}}
+                                <button type="button" class="btn btn-danger" onclick="Sobremesa.confirm('Confirmation', 'Do you really want to cancel joining the lunch?', cancelLunch, {{lunchId}})">Cancel</button>
+                            {{else}}
+                                <button type="button" class="btn btn-success" onclick="joinLunch({{lunchId}})">Join</button>
+                            {{/isJoined}}
+                        {{/isMine}}
                     </div>
-                    <div id="collapseLunch{{this.lunchId}}" class="panel-collapse collapse{{#unless @index}} in{{/unless}}" style="height: auto;">
-                        <div class="panel-body">
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <i class="fa fa-info fa-fw"></i> Information
-                                </div>
-                                <div class="panel-body" style="height: auto;">
-                                    <strong>Description</strong><br />
-                                    {{this.description}}<br /><br />
-                                    <strong>Number of People</strong><br />
-                                    {{this.minPeople}} ~ {{this.maxPeople}}<br /><br />
-                                    <strong>Time</strong><br />
-                                    {{stringTime this.beginTime}} ~ {{stringTime this.endTime}}<br /><br />
-                                    <strong>Location</strong><br />
-                                    <a href="{{googleMapURL this.location}}" target="_blank">{{this.location}}</a><br /><br />
-                                    <strong>Members</strong><br />
-                                    <img src="{{avatarURL this 50}}" alt="{{this.displayName}}" class="img-circle"> {{this.displayName}} (Host)
-                                    {{#each this.members}}
-                                    <img src="{{avatarURL this 50}}" alt="{{this.displayName}}" class="img-circle"> {{this.displayName}}
-                                    {{/each}}
-                                </div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">
-                                    <i class="fa fa-comments fa-fw"></i> Comments
-                                </div>
-                                {{#if this.comments}}
-                                    <div class="panel-body" style="height: auto;">
-                                        <ul class="chat">
-                                            {{#each this.comments}}
-                                                <li class="left clearfix">
-                                                    <span class="chat-img pull-left">
-                                                        <img src="{{avatarURL this 50}}" alt="{{this.displayName}}" class="img-circle">
-                                                    </span>
-                                                    <div class="chat-body clearfix">
-                                                        <div class="header">
-                                                            <strong class="primary-font">{{this.displayName}}</strong> 
-                                                            <small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>
-                                                                {{readableTime this.createdTime}} ago
-                                                            </small>
-                                                        </div>
-                                                        <p>{{this.content}}</p>
-                                                    </div>
-                                                </li>
-                                            {{/each}}
-                                        </ul>
+                </h4>
+                <div class="clearfix"></div>
+            </div>
+            <div id="collapseLunch{{lunchId}}" class="panel-collapse collapse{{#unless @index}} in{{/unless}}" style="height: auto;">
+                <div class="panel-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-info fa-fw"></i> Information
+                        </div>
+                        <div class="panel-body" style="height: auto;">
+                            <strong>Description</strong><br />
+                            {{description}}<br /><br />
+                            <strong>Number of People</strong><br />
+                            {{minPeople}} ~ {{maxPeople}}<br /><br />
+                            <strong>Time</strong><br />
+                            {{stringTime beginTime}} ~ {{stringTime endTime}}<br /><br />
+                            <strong>Location</strong><br />
+                            <a href="{{googleMapURL location}}" target="_blank">{{location}}</a><br /><br />
+                            <strong>Members</strong><br />
+                            <img src="{{avatarURL this 50}}" alt="{{displayName}}" class="img-circle"> {{displayName}} (Host)
+                            {{#each members}}
+                            <img src="{{avatarURL this 50}}" alt="{{displayName}}" class="img-circle"> {{displayName}}
+                            {{/each}}
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-comments fa-fw"></i> Comments
+                        </div>
+                        {{#if comments}}
+                        <div class="panel-body" style="height: auto;">
+                            <ul class="chat">
+                                {{#each comments}}
+                                <li class="left clearfix">
+                                    <span class="chat-img pull-left">
+                                        <img src="{{avatarURL this 50}}" alt="{{displayName}}" class="img-circle">
+                                    </span>
+                                    <div class="chat-body clearfix">
+                                        <div class="header">
+                                            <strong class="primary-font">{{displayName}}</strong>
+                                            <small class="pull-right text-muted"><i class="fa fa-clock-o fa-fw"></i>
+                                                {{readableTime createdTime}} ago
+                                            </small>
+                                        </div>
+                                        <p>{{content}}</p>
                                     </div>
-                                {{/if}}
-                                <div class="panel-footer">
-                                    <div class="input-group">
-                                        <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your comment here...">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary btn-sm" id="btn-chat">
-                                                Submit
-                                            </button>
-                                        </span>
-                                    </div>
-                                </div>
+                                </li>
+                                {{/each}}
+                            </ul>
+                        </div>
+                        {{/if}}
+                        <div class="panel-footer">
+                            <div class="input-group">
+                                <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your comment here...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-primary btn-sm" id="btn-chat">
+                                            Submit
+                                        </button>
+                                    </span>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </script>
+
+    <script id="template-lunches" type="text/x-handlebars-template">
+        <div class="panel-group" id="accordion">
+            {{#each lunches}}
+                {{> lunch}}
             {{/each}}
         </div>
     </script>
@@ -113,8 +132,33 @@
             return Sobremesa.timestampToString(timestamp);
         });
 
+        Handlebars.registerHelper('isMine', function(conditional, options) {
+            var me = Sobremesa.getMe();
+
+            if (conditional.userId == me.userId) {
+                return options.fn(this);
+            }
+
+            return options.inverse(this);
+        });
+
+        Handlebars.registerHelper('isJoined', function(conditional, options) {
+            var me = Sobremesa.getMe();
+
+            for (var i in conditional.members) {
+                if (conditional.members[i].userId == me.userId) {
+                    return options.fn(this);
+                }
+            }
+
+            return options.inverse(this);
+        });
+
+        Handlebars.registerPartial('lunch', $('#template-lunch').html());
+
         var Renders = {
-            lunches: Handlebars.compile($("#template-lunches").html())
+            lunches: Handlebars.compile($("#template-lunches").html()),
+            lunch: Handlebars.compile($("#template-lunch").html())
         }
     </script>
 
@@ -154,6 +198,24 @@
             $('#avatar').attr('alt', me.displayName);
         }
     });
+
+    function updateLunchView(lunchId) {
+        Sobremesa.callApi('lunch', 'GET', {lunchId: lunchId}, function(result) {
+            $('#panelLunch' + lunchId).html(Renders.lunch(result));
+        }, function(error) {
+            if (error.status == '400') {
+                Sobremesa.alert('Error', 'Invalid parameters');
+            } else if (error.status == '404') {
+                Sobremesa.alert('Error', 'Couldn\'t find the lunch');
+            } else {
+                Sobremesa.alert('Error', 'An unknown error occurred');
+            }
+        });
+    }
+
+    function removeLunchView(lunchId) {
+        $('#panelLunch' + lunchId).remove();
+    }
 
     function validateLunchForm() {
         var result = {};
@@ -250,17 +312,84 @@
         $('#lunchForm').modal('show');
     }
 
-    function showEditLunchForm(id, theme, location, description, beginTime, endTime, minPeople, maxPeople) {
+    function showEditLunchForm(lunchId, theme, location, description, beginTime, endTime, minPeople, maxPeople) {
         $('#lunchFormTitle').html('Edit');
         $('#lunchFormTheme').val(theme);
         $('#lunchFormLocation').val(location);
         $('#lunchFormDescription').val(description);
-        $('#lunchFormBeginTime').val(beginTime);
-        $('#lunchFormEndTime').val(endTime);
+        $('#lunchFormBeginTime').val(Sobremesa.timestampToString(beginTime));
+        $('#lunchFormEndTime').val(Sobremesa.timestampToString(endTime));
         $('#lunchFormNumberOfPeopleMin').val(minPeople);
         $('#lunchFormNumberOfPeopleMax').val(maxPeople);
 
+        $('#lunchFormSubmit').on('click', function(event) {
+            var parameters = validateLunchForm();
+
+            if (parameters !== false) {
+                parameters.lunchId = lunchId;
+
+                Sobremesa.callApi('lunch', 'POST', parameters, function(result) {
+                    $('#lunchForm').modal('hide');
+                    updateLunchView(lunchId);
+                }, function(error) {
+                    if (error.status == '400') {
+                        Sobremesa.alert('Error', 'Invalid parameters');
+                    } else if (error.status == '403') {
+                        Sobremesa.alert('Error', 'You have no permission to edit this lunch');
+                    } else if (error.status == '404') {
+                        Sobremesa.alert('Error', 'Couldn\'t find the lunch');
+                    } else {
+                        Sobremesa.alert('Error', 'An unknown error occurred');
+                    }
+                });
+            }
+        });
+
         $('#lunchForm').modal('show');
+    }
+
+    function deleteLunch(lunchId) {
+        Sobremesa.callApi('lunch', 'DELETE', {lunchId: lunchId}, function(result) {
+            removeLunchView(lunchId);
+        }, function(error) {
+            if (error.status == '400') {
+                Sobremesa.alert('Error', 'Invalid parameters');
+            } else if (error.status == '403') {
+                Sobremesa.alert('Error', 'You have no permission to delete this lunch');
+            } else if (error.status == '404') {
+                Sobremesa.alert('Error', 'Couldn\'t find the lunch');
+            } else {
+                Sobremesa.alert('Error', 'An unknown error occurred');
+            }
+        });
+    }
+
+    function joinLunch(lunchId) {
+        Sobremesa.callApi('lunch/' + lunchId + '/member', 'PUT', null, function(result) {
+            updateLunchView(lunchId);
+        }, function(error) {
+            if (error.status == '400') {
+                Sobremesa.alert('Error', 'Invalid parameters');
+            } else if (error.status == '404') {
+                Sobremesa.alert('Error', 'Couldn\'t find the lunch');
+            } else {
+                Sobremesa.alert('Error', 'An unknown error occurred');
+            }
+        });
+    }
+
+    function cancelLunch(lunchId) {
+        Sobremesa.callApi('lunch/' + lunchId + '/member', 'DELETE', null, function(result) {
+            updateLunchView(lunchId);
+        }, function(error) {
+            if (error.status == '400') {
+                Sobremesa.alert('Error', 'Invalid parameters');
+            } else if (error.status == '404') {
+                Sobremesa.alert('Error', 'Couldn\'t find the lunch');
+            } else {
+                Sobremesa.alert('Error', 'An unknown error occurred');
+            }
+        });
     }
 
     function logout() {
@@ -370,9 +499,6 @@
                         <a href="#" onClick="showCreateLunchForm()"><i class="fa fa-plus fa-fw"></i> Create</a>
                     </li>
                     <li>
-                        <a href="#" onClick="showEditLunchForm(1, 'theme', 'location', 'description', '2014.10.28 12:00', '2014.10.28 13:00', 4, 8)"><i class="fa fa-plus fa-fw"></i> Edit (Test)</a>
-                    </li>
-                    <li>
                         <a href="https://github.com/Barbayar/Sobremesa" target="_blank"><i class="fa fa-github fa-fw"></i> Fork me on Github</a>
                     </li>
                 </ul>
@@ -384,82 +510,23 @@
                 <div class="col-lg-12">
                     <h1 class="page-header">Home</h1>
                 </div>
-                <!-- /.col-lg-12 -->
             </div>
-            <!-- /.row -->
             <div class="row">
                 <div class="col-lg-8" id="mainView">
                 </div>
-                <!-- /.col-lg-8 -->
                 <div class="col-lg-4">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <i class="fa fa-info fa-fw"></i> Informations
                         </div>
-                        <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <div class="list-group">
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small"><em>4 minutes ago</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small"><em>12 minutes ago</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small"><em>27 minutes ago</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small"><em>43 minutes ago</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small"><em>11:32 AM</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-bolt fa-fw"></i> Server Crashed!
-                                    <span class="pull-right text-muted small"><em>11:13 AM</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-warning fa-fw"></i> Server Not Responding
-                                    <span class="pull-right text-muted small"><em>10:57 AM</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-shopping-cart fa-fw"></i> New Order Placed
-                                    <span class="pull-right text-muted small"><em>9:49 AM</em>
-                                    </span>
-                                </a>
-                                <a href="#" class="list-group-item">
-                                    <i class="fa fa-money fa-fw"></i> Payment Received
-                                    <span class="pull-right text-muted small"><em>Yesterday</em>
-                                    </span>
-                                </a>
-                            </div>
-                            <!-- /.list-group -->
-                            <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+                            Under Construction
                         </div>
-                        <!-- /.panel-body -->
                     </div>
-                    <!-- /.panel -->
                 </div>
-                <!-- /.col-lg-4 -->
             </div>
-            <!-- /.row -->
         </div>
-        <!-- /#page-wrapper -->
-
     </div>
-    <!-- /#wrapper -->
 </body>
 
 </html>

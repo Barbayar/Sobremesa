@@ -139,6 +139,38 @@ var Sobremesa = {
         $('#alertWindowMessage').html(message);
         $('#alertWindow').modal('show');
     },
+    confirm: function(title, message, callback, parameter) {
+        if ($('#confirmWindow').size() == 0) {
+            $("body").append($(' \
+                <div class="modal fade" id="confirmWindow" tabindex="-1" role="dialog" aria-labelledby="confirmWindowTitle" aria-hidden="true" style="display: none;"> \
+                    <div class="modal-dialog"> \
+                        <div class="modal-content"> \
+                            <div class="modal-header"> \
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button> \
+                                <h4 class="modal-title" id="confirmWindowTitle">Title</h4> \
+                            </div> \
+                            <div class="modal-body"> \
+                                <label id="confirmWindowMessage">Message</label> \
+                            </div> \
+                            <div class="modal-footer"> \
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button> \
+                                <button type="button" class="btn btn-primary" id="confirmWindowOKButton">OK</button> \
+                            </div> \
+                        </div> \
+                    </div> \
+                </div> \
+            '));
+        }
+
+        $('#confirmWindowTitle').html(title);
+        $('#confirmWindowMessage').html(message);
+        $('#confirmWindowOKButton').unbind('click');
+        $('#confirmWindowOKButton').click(function(event) {
+            callback(parameter);
+            $('#confirmWindow').modal('hide');
+        });
+        $('#confirmWindow').modal('show');
+    },
     loading: function(show) {
         if ($('#loadingWindow').size() == 0) {
             $("body").append($(' \
