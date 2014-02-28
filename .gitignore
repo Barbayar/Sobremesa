@@ -1,6 +1,3 @@
-# data folder
-data
-
 # sensitive files (implement yourself)
 class/SLAuthentication.php
 class/SLNotification.php
@@ -9,6 +6,11 @@ class/SLNotification.php
 composer.phar
 composer.lock
 vendor
+
+# bower components
+htdocs/component/*
+!htdocs/component/sobremesa
+!htdocs/component/sb-admin
 
 # IDE files
 .idea

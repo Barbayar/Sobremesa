@@ -1,23 +1,16 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobremesa</title>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/sb-admin.css" rel="stylesheet"><!-- https://raw2.github.com/IronSummitMedia/startbootstrap/master/templates/sb-admin-v2/css/sb-admin.css -->
-    <link href="css/bootstrap-slider.css" rel="stylesheet"><!-- https://raw2.github.com/seiyria/bootstrap-slider/1.9.5/css/bootstrap-slider.css -->
-    <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet"><!-- https://raw2.github.com/smalot/bootstrap-datetimepicker/2.2.0/css/bootstrap-datetimepicker.min.css -->
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-slider.js"></script><!-- https://raw2.github.com/seiyria/bootstrap-slider/1.9.5/js/bootstrap-slider.js -->
-    <script src="js/bootstrap-datetimepicker.min.js"></script><!-- https://raw2.github.com/smalot/bootstrap-datetimepicker/2.2.0/js/bootstrap-datetimepicker.min.js -->
-    <script src="js/jquery.cookie.js"></script><!-- https://raw.github.com/carhartl/jquery-cookie/v1.4.0/jquery.cookie.js -->
-    <script src="js/handlebars-v1.3.0.js"></script><!-- http://builds.handlebarsjs.com.s3.amazonaws.com/handlebars-v1.3.0.js -->
-    <script src="js/sobremesa.js"></script>
+    <link href="component/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="component/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="component/seiyria-bootstrap-slider/css/bootstrap-slider.css" rel="stylesheet" type="text/css">
+    <link href="component/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+    <link href="component/sb-admin/sb-admin.css" rel="stylesheet"><!-- https://raw2.github.com/IronSummitMedia/startbootstrap/master/templates/sb-admin-v2/css/sb-admin.css -->
+
+    <title>Sobremesa</title>
 
     <script id="template-lunch" type="text/x-handlebars-template">
         <div class="panel panel-default" id="panelLunch{{lunchId}}">
@@ -114,6 +107,143 @@
             {{/each}}
         </div>
     </script>
+</head>
+
+<body>
+    <div class="modal fade" id="lunchForm" tabindex="-1" role="dialog" aria-labelledby="lunchFormTitle" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="lunchFormTitle">Create</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Theme</label>
+                        <input class="form-control" id="lunchFormTheme" placeholder="English Lunch">
+                    </div>
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input class="form-control" id="lunchFormLocation" placeholder="Restaurante La Sobremesa">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea class="form-control" rows="3" id="lunchFormDescription" placeholder="Everybody can join this lunch. You don't have to be a native speaker."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Begin Time</label>
+                        <div class="input-group date form_datetime">
+                            <input class="form-control" size="16" type="text" value="" id="lunchFormBeginTime" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <div class="input-group date form_datetime">
+                            <input class="form-control" size="16" type="text" value="" id="lunchFormEndTime" readonly>
+                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of People</label>
+                        <div class="row">
+                            <div class="col-lg-2">
+                                <input class="form-control" id="lunchFormNumberOfPeopleMin" readonly>
+                            </div>
+                            <div class="col-lg-8">
+                                <input id="lunchFormNumberOfPeople" type="text" class="span2" value=""/>
+                            </div>
+                            <div class="col-lg-2">
+                                <input class="form-control" id="lunchFormNumberOfPeopleMax" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="lunchFormSubmit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="wrapper">
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="index.html">Sobremesa</a>
+            </div>
+            <ul class="nav navbar-top-links navbar-right">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <img alt="" class="img-circle" height="50" src="" width="50" id="avatar">
+                        <span id="displayName"></span>
+                        <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a onClick="logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <nav class="navbar-default navbar-static-side" role="navigation">
+            <div class="sidebar-collapse">
+                <ul class="nav" id="side-menu">
+                    <li>
+                        <a href="index.html"><i class="fa fa-home fa-fw"></i> Home</a>
+                    </li>
+                    <li>
+                        <a href="#" onClick="showCreateLunchForm()"><i class="fa fa-plus fa-fw"></i> Create</a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/Barbayar/Sobremesa" target="_blank"><i class="fa fa-github fa-fw"></i> Fork me on Github</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Home</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8" id="mainView">
+                </div>
+                <div class="col-lg-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-info fa-fw"></i> Informations
+                        </div>
+                        <div class="panel-body">
+                            Under Construction
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="component/jquery/dist/jquery.min.js"></script>
+    <script src="component/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="component/handlebars/handlebars.min.js"></script>
+    <script src="component/ember/ember.min.js"></script>
+    <script src="component/jquery.cookie/jquery.cookie.js"></script>
+    <script src="component/modernizr/modernizr.js"></script>
+    <script src="component/momentjs/min/moment.min.js"></script>
+    <script src="component/seiyria-bootstrap-slider/js/bootstrap-slider.js"></script>
+    <script src="component/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="component/sobremesa/sobremesa.js"></script>
 
     <script type="text/javascript">
         Handlebars.registerHelper('avatarURL', function(user, size) {
@@ -401,132 +531,5 @@
         }, false);
     }
     </script>
-</head>
-
-<body>
-    <div class="modal fade" id="lunchForm" tabindex="-1" role="dialog" aria-labelledby="lunchFormTitle" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title" id="lunchFormTitle">Create</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Theme</label>
-                        <input class="form-control" id="lunchFormTheme" placeholder="English Lunch">
-                    </div>
-                    <div class="form-group">
-                        <label>Location</label>
-                        <input class="form-control" id="lunchFormLocation" placeholder="Restaurante La Sobremesa">
-                    </div>
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea class="form-control" rows="3" id="lunchFormDescription" placeholder="Everybody can join this lunch. You don't have to be a native speaker."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Begin Time</label>
-                        <div class="input-group date form_datetime">
-                            <input class="form-control" size="16" type="text" value="" id="lunchFormBeginTime" readonly>
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>End Time</label>
-                        <div class="input-group date form_datetime">
-                            <input class="form-control" size="16" type="text" value="" id="lunchFormEndTime" readonly>
-                            <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Number of People</label>
-                        <div class="row">
-                            <div class="col-lg-2">
-                                <input class="form-control" id="lunchFormNumberOfPeopleMin" readonly>
-                            </div>
-                            <div class="col-lg-8">
-                                <input id="lunchFormNumberOfPeople" type="text" class="span2" value=""/>
-                            </div>
-                            <div class="col-lg-2">
-                                <input class="form-control" id="lunchFormNumberOfPeopleMax" readonly>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="lunchFormSubmit">Submit</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="wrapper">
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">Sobremesa</a>
-            </div>
-            <ul class="nav navbar-top-links navbar-right">
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <img alt="" class="img-circle" height="50" src="" width="50" id="avatar">
-                        <span id="displayName"></span>
-                        <i class="fa fa-caret-down"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                        </li>
-                        <li class="divider"></li>
-                        <li><a onClick="logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </nav>
-        <nav class="navbar-default navbar-static-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav" id="side-menu">
-                    <li>
-                        <a href="index.html"><i class="fa fa-home fa-fw"></i> Home</a>
-                    </li>
-                    <li>
-                        <a href="#" onClick="showCreateLunchForm()"><i class="fa fa-plus fa-fw"></i> Create</a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/Barbayar/Sobremesa" target="_blank"><i class="fa fa-github fa-fw"></i> Fork me on Github</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
-        <div id="page-wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header">Home</h1>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-8" id="mainView">
-                </div>
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-info fa-fw"></i> Informations
-                        </div>
-                        <div class="panel-body">
-                            Under Construction
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
-
 </html>
