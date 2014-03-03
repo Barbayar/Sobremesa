@@ -23,7 +23,7 @@ Ember.Handlebars.helper('googleMapURL', function(location) {
 
 Handlebars.registerHelper('isMine', function(conditional, options) {
     var userId = Ember.Handlebars.get(this, conditional);
-    var me = Sobremesa.getMe();
+    var me = App.getMe();
 
     if (userId == me.userId) {
         return options.fn(this);
@@ -33,8 +33,8 @@ Handlebars.registerHelper('isMine', function(conditional, options) {
 });
 
 Handlebars.registerHelper('isJoined', function(conditional, options) {
-    var memebers = Ember.Handlebars.get(this, conditional);
-    var me = Sobremesa.getMe();
+    var members = Ember.Handlebars.get(this, conditional);
+    var me = App.getMe();
 
     for (var i = 0; i < members.length; i++) {
         if (members[i].userId == me.userId) {

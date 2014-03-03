@@ -9,8 +9,3 @@ vendor
 
 # bower components
 htdocs/component/*
-!htdocs/component/sobremesa
-!htdocs/component/sb-admin
-
-# IDE files
-.idea

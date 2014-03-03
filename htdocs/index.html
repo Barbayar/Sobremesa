@@ -10,7 +10,7 @@
         <link href="component/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
         <link href="component/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css" rel="stylesheet" type="text/css">
         <link href="component/smalot-bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
-        <link href="component/sb-admin/sb-admin.css" rel="stylesheet"><!-- https://raw2.github.com/IronSummitMedia/startbootstrap/master/templates/sb-admin-v2/css/sb-admin.css -->
+        <link href="css/sb-admin.css" rel="stylesheet"><!-- https://raw2.github.com/IronSummitMedia/startbootstrap/master/templates/sb-admin-v2/css/sb-admin.css -->
     </head>
 
     <body>
@@ -27,7 +27,7 @@
                         {{/if}}
                         <div class="form-group">
                             <label>Theme</label>
-                            {{input class="form-control text-danger" placeholder="English Lunch" type="text" value=theme}}
+                            {{input class="form-control" placeholder="English Lunch" type="text" value=theme}}
                         </div>
                         <div class="form-group">
                             <label>Location</label>
@@ -71,11 +71,11 @@
             </div>
         </script>
 
-        <div class="modal fade" id="loadingWindow" tabindex="-1" role="dialog" aria-labelledby="loadingWindowTitle" aria-hidden="true" style="display: none;">
+        <div class="modal fade" id="loadingWindow" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="loadingWindowTitle">Loading...</h4>
+                        <h4 class="modal-title">Loading...</h4>
                     </div>
                     <div class="modal-body">
                         <div class="progress progress-striped active">
@@ -122,28 +122,27 @@
             </div>
         </script>
 
-        <script type="text/x-handlebars" id="login">
-            <div class="modal fade" id="loadingWindow" tabindex="-1" role="dialog" aria-labelledby="loadingWindowTitle" aria-hidden="true" style="display: none;">
-                <div class="modal fade">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Please Sign In</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form role="form">
-                                    <fieldset>
-                                        <div class="form-group" id="usernameFormGroup">
-                                            <input class="form-control" placeholder="Username" id="username" type="text" autofocus>
-                                        </div>
-                                        <div class="form-group" id="passwordFormGroup">
-                                            <input class="form-control" placeholder="Password" id="password" type="password" value="">
-                                        </div>
-                                        <a class="btn btn-lg btn-success btn-block" id="loginButton" onclick="login()">Login</a>
-                                    </fieldset>
-                                </form>
-                            </div>
-                        </div>
+        <script type="text/x-handlebars" data-template-name="login">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Please Sign In</h4>
+                    </div>
+                    <div class="modal-body">
+                        {{#if errorMessage}}
+                            <p class="text-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</p>
+                        {{/if}}
+                        <form role="form">
+                            <fieldset>
+                                <div class="form-group">
+                                    {{input class="form-control" placeholder="Username" type="text" value=username autofocus=true}}
+                                </div>
+                                <div class="form-group">
+                                    {{input class="form-control" placeholder="Password" type="password" value=password}}
+                                </div>
+                                <a class="btn btn-lg btn-success btn-block" {{action 'login' view}}>Login</a>
+                            </fieldset>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -161,7 +160,10 @@
                             {{readableTime createdTime}}
                         </small>
                     </div>
-                    <p>{{content}}</p>
+                    {{content}}
+                    {{#isMine userId}}
+                        <button type="button" class="btn btn-danger btn-xs pull-right" {{action 'deleteComment' this}}>Delete</button>
+                    {{/isMine}}
                 </div>
             </li>
         </script>
@@ -182,66 +184,56 @@
             <div class="btn-group pull-right">
                 {{#isMine userId}}
                     <button type="button" class="btn btn-warning" {{action 'edit' this}}>Edit</button>
-                    <button type="button" class="btn btn-danger" onclick="Sobremesa.confirm('Confirmation', 'Do you really want to delete the lunch?', deleteLunch, {{unbound lunchId}})">Delete</button>
+                    <button type="button" class="btn btn-danger" {{action 'delete' this}}>Delete</button>
                 {{else}}
                     {{#isJoined members}}
-                        <button type="button" class="btn btn-danger" onclick="Sobremesa.confirm('Confirmation', 'Do you really want to cancel joining the lunch?', cancelLunch, {{unbound lunchId}})">Cancel</button>
+                        <button type="button" class="btn btn-danger" {{action 'cancel' this}}>Cancel</button>
                     {{else}}
-                        <button type="button" class="btn btn-success" onclick="joinLunch({{unbound lunchId}})">Join</button>
+                        <button type="button" class="btn btn-success" {{action 'join' this}}>Join</button>
                     {{/isJoined}}
                 {{/isMine}}
             </div>
+            <div class="clearfix"></div>
         </script>
 
-        <script type="text/x-handlebars" data-template-name="_lunch">
-            <div class="panel panel-default" id="panelLunch{{unbound lunchId}}">
+        <script type="text/x-handlebars" data-template-name="_lunch-information">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseLunch{{unbound lunchId}}" class="">
-                            <i class="fa fa-cutlery fa-fw"></i> {{theme}}
-                        </a>
-                        {{partial 'lunchButtons'}}
-                    </h4>
-                    <div class="clearfix"></div>
+                    <i class="fa fa-cutlery fa-fw"></i> Information
+                    {{partial 'lunchButtons'}}
                 </div>
-                <div id="collapseLunch{{unbound lunchId}}" class="panel-collapse" style="height: auto;">
-                    <div class="panel-body">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <i class="fa fa-info fa-fw"></i> Information
-                            </div>
-                            <div class="panel-body" style="height: auto;">
-                                <strong>Description</strong><br>
-                                {{description}}<br><br>
-                                <strong>Number of People</strong><br>
-                                {{minPeople}} ~ {{maxPeople}}<br><br>
-                                <strong>Time</strong><br>
-                                {{stringTime beginTime}} ~ {{stringTime endTime}}<br><br>
-                                <strong>Location</strong><br>
-                                <a href="{{unbound googleMapURL location}}" target="_blank">{{location}}</a><br><br>
-                                <strong>Members</strong><br>
-                                <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle"> {{displayName}} (Host)
-                                {{#each members}}
-                                <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle"> {{displayName}}
-                                {{/each}}
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <i class="fa fa-comments fa-fw"></i> Comments
-                            </div>
-                            {{partial 'comments'}}
-                            <div class="panel-footer">
-                                <div class="input-group">
-                                    <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your comment here...">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-primary btn-sm" id="btn-chat">
-                                            Submit
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                <div class="panel-body" style="height: auto;">
+                    <strong>Location</strong><br>
+                    <a href="{{unbound googleMapURL location}}" target="_blank">{{location}}</a><br><br>
+                    <strong>Description</strong><br>
+                    {{description}}<br><br>
+                    <strong>Time</strong><br>
+                    {{stringTime beginTime}} ~ {{stringTime endTime}}<br><br>
+                    <strong>Number of People</strong><br>
+                    {{minPeople}} ~ {{maxPeople}}<br><br>
+                    <strong>Members</strong><br>
+                    <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle"> {{displayName}} (Host)
+                    {{#each members}}
+                    <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle"> {{displayName}}
+                    {{/each}}
+                </div>
+            </div>
+        </script>
+
+        <script type="text/x-handlebars" data-template-name="_lunch-comments">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-comments fa-fw"></i> Comments
+                </div>
+                {{partial 'comments'}}
+                <div class="panel-footer">
+                    <div class="input-group">
+                        {{input class="form-control" type="text" value=commentToAdd}}
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary btn-sm" {{action 'addComment' this}}>
+                                Submit
+                            </button>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -250,7 +242,24 @@
         <script type="text/x-handlebars" data-template-name="_lunches">
             <div class="panel-group" id="accordion">
                 {{#each model}}
-                    {{partial 'lunch'}}
+                    <div class="panel panel-default" id="panelLunch{{unbound lunchId}}">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a href="#/lunch/{{unbound lunchId}}">
+                                    {{theme}} <small class="text-info">{{readableTime beginTime}}</small>
+                                </a>
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseLunch{{unbound lunchId}}" class="pull-right">
+                                    <i class="fa fa-expand fa-fw"></i>
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseLunch{{unbound lunchId}}" class="panel-collapse collapse" style="height: auto;">
+                            <div class="panel-body">
+                                {{partial 'lunch-information'}}
+                                {{partial 'lunch-comments'}}
+                            </div>
+                        </div>
+                    </div>
                 {{/each}}
             </div>
         </script>
@@ -270,8 +279,8 @@
                     <ul class="nav navbar-top-links navbar-right">
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <img alt="" class="img-circle" height="50" src="" width="50" id="avatar">
-                                <span id="displayName"></span>
+                                <img alt="{{unbound displayName}}" class="img-circle" height="50" src="{{unbound avatarURL data 50}}" width="50" id="avatar">
+                                <span>{{displayName}}</span>
                                 <i class="fa fa-caret-down"></i>
                             </a>
                             <ul class="dropdown-menu dropdown-user">
@@ -305,7 +314,7 @@
                         <div class="col-lg-4">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <i class="fa fa-info fa-fw"></i> Informations
+                                    <i class="fa fa-info fa-fw"></i> Announces
                                 </div>
                                 <div class="panel-body">
                                     Under Construction
@@ -330,8 +339,12 @@
 
         <script type="text/x-handlebars" id="lunch">
             <div>
+                <div class="col-lg-12">
+                    <h1 class="page-header">{{theme}} <small class="text-info">{{readableTime beginTime}}</small></h1>
+                </div>
                 <div class="col-lg-8">
-                    {{partial 'lunch'}}
+                    {{partial 'lunch-information'}}
+                    {{partial 'lunch-comments'}}
                 </div>
             </div>
         </script>
@@ -347,7 +360,6 @@
         <script src="component/momentjs/min/moment.min.js" type="text/javascript"></script>
         <script src="component/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js" type="text/javascript"></script>
         <script src="component/smalot-bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-        <script src="component/sobremesa/sobremesa.js" type="text/javascript"></script>
         <script src="js/app.js" type="text/javascript"></script>
         <script src="js/helper.js" type="text/javascript"></script>
     <!--
