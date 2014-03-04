@@ -2,6 +2,7 @@
 Sobremesa is a small social lunch service. You can use it in your company or organization to help people to socialize.
 
 Documentation: http://sobremesa.barbayar.net/documentation
+Demo: http://sobremesa.barbayar.net/
 
 > **sobremesa**<br>
 (n.) the time spent around the table after lunch or dinner, talking to the people you shared the meal with; time to digest and savor both food and friendship
@@ -11,10 +12,11 @@ Documentation: http://sobremesa.barbayar.net/documentation
 `git clone git@github.com:Barbayar/Sobremesa.git`<br>
 or `git clone https://github.com/Barbayar/Sobremesa.git`
 
-##### 2. Install
+##### 2. Install Composer packages
 ```
 cd Sobremesa
-./bin/install.sh
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install
 ```
 
 ##### 3. Configure HTTP Server
