@@ -1,7 +1,7 @@
 ## Sobremesa
 Sobremesa is a small social lunch service. You can use it in your company or organization to help people to socialize.
 
-Documentation: http://sobremesa.barbayar.net/documentation
+Documentation: http://sobremesa.barbayar.net/documentation<br>
 Demo: http://sobremesa.barbayar.net/
 
 > **sobremesa**<br>
