@@ -6,6 +6,3 @@ class/SLNotification.php
 composer.phar
 composer.lock
 vendor
-
-# bower components
-htdocs/component/*
