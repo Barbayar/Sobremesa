@@ -1,12 +1,12 @@
-Ember.Handlebars.helper('readableTime', function(timestamp) {
+Ember.Handlebars.helper('readableTime', function(timestamp, options) {
     return moment.unix(timestamp).fromNow();
 });
 
-Ember.Handlebars.helper('stringTime', function(timestamp) {
+Ember.Handlebars.helper('stringTime', function(timestamp, options) {
     return moment.unix(timestamp).format(App.TimeFormat.moment);
 });
 
-Ember.Handlebars.helper('avatarURL', function(data, size) {
+Ember.Handlebars.helper('avatarURL', function(data, size, options) {
     var dataObject = JSON.parse(data);
     var avatarURL = dataObject.gravatarURL;
 
@@ -17,30 +17,22 @@ Ember.Handlebars.helper('avatarURL', function(data, size) {
     return avatarURL;
 });
 
-Ember.Handlebars.helper('googleMapURL', function(location) {
+Ember.Handlebars.helper('googleMapURL', function(location, options) {
     return 'https://maps.google.com/?q=' + encodeURIComponent(location);
 });
 
-Handlebars.registerHelper('isMine', function(conditional, options) {
-    var userId = Ember.Handlebars.get(this, conditional);
-    var me = App.getMe();
-
-    if (userId == me.userId) {
-        return options.fn(this);
-    }
-
-    return options.inverse(this);
+Ember.Handlebars.helper('breaklines', function(text, options) {
+    text = Handlebars.Utils.escapeExpression(text);
+    text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
+    return new Handlebars.SafeString(text);
 });
 
-Handlebars.registerHelper('isJoined', function(conditional, options) {
-    var members = Ember.Handlebars.get(this, conditional);
-    var me = App.getMe();
+Ember.Handlebars.helper('timelineClass', function(dummy, options) {
+    var index = options.data.view.contentIndex;
 
-    for (var i = 0; i < members.length; i++) {
-        if (members[i].userId == me.userId) {
-            return options.fn(this);
-        }
+    if (index % 2 === 0) {
+        return '';
     }
 
-    return options.inverse(this);
+    return 'timeline-inverted';
 });

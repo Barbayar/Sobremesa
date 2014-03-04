@@ -53,6 +53,35 @@ App.removeMe = function() {
     $.removeCookie('me');
 }
 
+App.completeModelLunch = function(lunch) {
+    var me = App.getMe();
+    var result = lunch;
+
+    if (result.userId == me.userId) {
+        result.isMine = true;
+    } else {
+        result.isMine = false;
+    }
+
+    if (result.members.findBy('userId', me.userId.toString())) {
+        result.isJoined = true;
+    } else {
+        result.isJoined = false;
+    }
+
+    return result;
+}
+
+App.completeModelLunches = function(lunches) {
+    var result = [];
+
+    lunches.forEach(function(lunch) {
+        result.push(App.completeModelLunch(lunch));
+    });
+
+    return result;
+}
+
 App.AlertView = Ember.View.extend({
     templateName: 'alert',
     classNames: ['modal', 'fade'],
@@ -207,6 +236,8 @@ App.LunchFormView = Ember.View.extend({
     templateName: 'lunchForm',
     classNames: ['modal', 'fade'],
     didInsertElement: function() {
+        var controller = this.controller;
+
         this.$().on('hidden.bs.modal', function() {
             $(this).remove();
 
@@ -222,6 +253,17 @@ App.LunchFormView = Ember.View.extend({
                 pickerPosition: 'bottom-left',
                 minuteStep: 10
             });
+
+            $('#numberOfPeople').slider({
+                range: true,
+                min: 2,
+                max: 20,
+                values: [controller.get('minPeople'), controller.get('maxPeople')],
+                slide: function(event, ui) {
+                    controller.set('minPeople', ui.values[0].toString());
+                    controller.set('maxPeople', ui.values[1].toString());
+                }
+            });
         });
 
         this.$().modal('show');
@@ -235,10 +277,10 @@ App.LunchFormController = Ember.ObjectController.extend({
     description: '',
     beginTime: 0,
     endTime: 0,
-    beginTimeString: '',
-    endTimeString: '',
-    minPeople: '',
-    maxPeople: '',
+    beginTimeString: moment().startOf('hour').add('hours', 1).format(App.TimeFormat.moment),
+    endTimeString: moment().startOf('hour').add('hours', 2).format(App.TimeFormat.moment),
+    minPeople: '4',
+    maxPeople: '8',
     errorMessage: '',
     validate: function() {
         if (!this.theme) {
@@ -340,65 +382,6 @@ App.lunchForm = function(model, callback) {
     App.LunchFormView.create().set('controller', App.LunchFormController.create(parameters)).append();
 }
 
-App.LunchActions = Ember.Mixin.create({
-    actions: {
-        edit: function(model) {
-            App.lunchForm(model, function(parameters) {
-                parameters.lunchId = model.lunchId;
-
-                App.Api.call('lunch', 'POST', parameters, function(result) {
-                    // TODO: this is lame
-                    location.reload();
-                }, function(error) {
-                    App.alertWithRequestError(error);
-                });
-            });
-        },
-        delete: function(model) {
-            App.confirm('Confirmation', 'Do you really want to delete this lunch?', function() {
-                App.Api.call('lunch', 'DELETE', {lunchId: model.lunchId}, function(result) {
-                    // TODO: this is lame
-                    location.reload();
-                }, function(error) {
-                    App.alertWithRequestError(error);
-                });
-            });
-        },
-        join: function(model) {
-            App.Api.call('lunch/' + model.lunchId + '/member', 'PUT', null, function(result) {
-                // TODO: this is lame
-                location.reload();
-            }, function(error) {
-                App.alertWithRequestError(error);
-            });
-        },
-        cancel: function(model) {
-            App.confirm('Confirmation', 'Do you really want to cancel joining this lunch?', function() {
-                App.Api.call('lunch/' + model.lunchId + '/member', 'DELETE', null, function(result) {
-                    // TODO: this is lame
-                    location.reload();
-                }, function(error) {
-                    App.alertWithRequestError(error);
-                });
-            });
-        },
-        addComment: function(model) {
-            if (model.commentToAdd.length < 1) {
-                return;
-            }
-
-            App.Api.call('lunch/' + model.lunchId + '/comment', 'PUT', {content: model.commentToAdd}, function(result) {
-                // TODO: this is lame
-                location.reload();
-            }, function(error) {
-                App.alertWithRequestError(error);
-            });
-        },
-        deleteComment: function(model) {
-        }
-    }
-});
-
 App.ApplicationRoute = Ember.Route.extend({
     model: function() {
         return App.getMe();
@@ -407,11 +390,18 @@ App.ApplicationRoute = Ember.Route.extend({
         createLunch: function() {
             App.lunchForm(null, function(parameters) {
                 App.Api.call('lunch', 'PUT', parameters, function(result) {
-                    // TODO: this is lame
-                    location.reload();
+                    location = '#/lunch/' + result;
                 }, function(error) {
                     App.alertWithRequestError(error);
                 });
+            });
+        },
+        logout: function() {
+            App.Api.call('logout', 'GET', null, function(result) {
+                App.removeMe();
+                location = '#';
+            }, function(error) {
+                App.alertWithRequestError(error);
             });
         }
     }
@@ -419,14 +409,18 @@ App.ApplicationRoute = Ember.Route.extend({
 
 App.Router.map(function() {
     this.resource('lunch', {path: 'lunch/:lunchId'});
+    this.resource('date', {path: 'date/:date'});
+    this.resource('profile', {path: 'profile/:userId'});
 });
 
-App.IndexRoute = Ember.Route.extend(App.LunchActions, {
+App.IndexRoute = Ember.Route.extend({
     model: function() {
         var deferred = $.Deferred();
 
         App.Api.call('lunch/available', 'GET', null, function(result) {
-            deferred.resolve(result);
+            deferred.resolve({
+                lunches: App.completeModelLunches(result)
+            });
         }, function(error) {
             deferred.resolve([]);
             App.alertWithRequestError(error);
@@ -436,16 +430,166 @@ App.IndexRoute = Ember.Route.extend(App.LunchActions, {
     }
 });
 
-App.LunchRoute = Ember.Route.extend(App.LunchActions, {
+App.LunchRoute = Ember.Route.extend({
+    actions: {
+        edit: function() {
+            var controller = this.controller;
+
+            App.lunchForm(controller.content, function(parameters) {
+                parameters.lunchId = controller.content.lunchId;
+
+                App.Api.call('lunch', 'POST', parameters, function(result) {
+                    for (var key in parameters) {
+                        controller.set(key, parameters[key]);
+                    }
+                }, function(error) {
+                    App.alertWithRequestError(error);
+                });
+            });
+        },
+        delete: function() {
+            var controller = this.controller;
+
+            App.confirm('Confirmation', 'Do you really want to delete this lunch?', function() {
+                App.Api.call('lunch', 'DELETE', {lunchId: controller.content.lunchId}, function(result) {
+                    location = '#';
+                }, function(error) {
+                    App.alertWithRequestError(error);
+                });
+            });
+        },
+        join: function() {
+            var controller = this.controller;
+
+            App.Api.call('lunch/' + controller.content.lunchId + '/member', 'PUT', null, function(result) {
+                controller.content.members.pushObject(App.getMe());
+                controller.set('isJoined', true);
+            }, function(error) {
+                App.alertWithRequestError(error);
+            });
+        },
+        cancel: function() {
+            var controller = this.controller;
+
+            App.confirm('Confirmation', 'Do you really want to cancel joining this lunch?', function() {
+                App.Api.call('lunch/' + controller.content.lunchId + '/member', 'DELETE', null, function(result) {
+                    var me = controller.content.members.findBy('userId', App.getMe().userId.toString());
+
+                    controller.content.members.removeObject(me);
+                    controller.set('isJoined', false);
+                }, function(error) {
+                    App.alertWithRequestError(error);
+                });
+            });
+        },
+        addComment: function() {
+            var controller = this.controller;
+
+            if (!controller.content.commentToAdd) {
+                return;
+            }
+
+            App.Api.call('lunch/' + controller.content.lunchId + '/comment', 'PUT', {content: controller.content.commentToAdd}, function(result) {
+                var comment = App.getMe();
+
+                comment.commentId = result;
+                comment.content = controller.content.commentToAdd;
+                comment.isMine = true;
+
+                controller.content.comments.pushObject(comment);
+                controller.set('commentToAdd', '');
+            }, function(error) {
+                App.alertWithRequestError(error);
+            });
+        },
+        deleteComment: function(comment) {
+            var controller = this.controller;
+
+            App.confirm('Confirmation', 'Do you really want to delete this comment?', function() {
+                App.Api.call('lunch/' + controller.content.lunchId + '/comment', 'DELETE', {commentId: comment.commentId}, function(result) {
+                    controller.content.comments.removeObject(comment);
+                }, function(error) {
+                    App.alertWithRequestError(error);
+                });
+            });
+        }
+    },
     model: function(parameters) {
         var deferred = $.Deferred();
 
-        App.Api.call('lunch?lunchId=' + parameters.lunchId, 'GET', null, function(result) {
-            deferred.resolve(result);
+        App.Api.call('lunch', 'GET', {lunchId: parameters.lunchId}, function(result) {
+            var me = App.getMe();
+
+            result.comments.forEach(function(item) {
+                if (item.userId == me.userId) {
+                    item.isMine = true;
+
+                    return;
+                };
+
+                item.isMine = false;
+            });
+
+            deferred.resolve(App.completeModelLunch(result));
         }, function(error) {
             App.alertWithRequestError(error);
         });
 
         return deferred.promise();
+    }
+});
+
+App.DateRoute = Ember.Route.extend({
+    model: function(parameters) {
+        var deferred = $.Deferred();
+
+        App.Api.call('lunch/byDate', 'GET', {date: parameters.date}, function(result) {
+            deferred.resolve({
+                date: parameters.date.substring(0, 4) + '.' + parameters.date.substring(4, 6) + '.' + parameters.date.substring(6, 8),
+                lunches: App.completeModelLunches(result)
+            });
+        }, function(error) {
+            App.alertWithRequestError(error);
+        });
+
+        return deferred.promise();
+    }
+});
+
+App.ProfileRoute = Ember.Route.extend({
+    model: function(parameters) {
+        var deferred = $.Deferred();
+
+        // TODO: will use parameters.lunchId
+        var user = App.getMe();
+
+        App.Api.call('lunch/byCreatorId', 'GET', {userId: user.userId}, function(createdLunches) {
+            App.Api.call('lunch/joined', 'GET', null, function(joinedLunches) {
+                var lunches = createdLunches.concat(joinedLunches).sortBy('beginTime');
+
+                deferred.resolve({
+                    user: user,
+                    lunches: App.completeModelLunches(lunches)
+                });
+            }, function(error) {
+                App.alertWithRequestError(error);
+            });
+        }, function(error) {
+            App.alertWithRequestError(error);
+        });
+
+        return deferred.promise();
+    }
+});
+
+App.ApplicationView = Ember.View.extend({
+    didInsertElement : function(){
+        this._super();
+        $("#calendar").datepicker({
+            dateFormat: 'yymmdd',
+            onSelect: function(date) {
+                location = "#/date/" + date;
+            }
+        });
     }
 });
