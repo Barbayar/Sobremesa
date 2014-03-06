@@ -2,7 +2,7 @@
 class SLValidators
 {
     const ID = '/^\d{1,10}$/';
-    const SINGLE_LINE = '/^.{1,100}$/su';
+    const SINGLE_LINE = '/^.{1,1000}$/su';
     const MULTI_LINE = '/^.{1,1000}$/mu';
     const TIMESTAMP = '/^\d{10}$/';
     const PEOPLE_COUNT = '/^\d{1,2}$/';

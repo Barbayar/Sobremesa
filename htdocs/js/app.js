@@ -390,7 +390,9 @@ App.ApplicationRoute = Ember.Route.extend({
         createLunch: function() {
             App.lunchForm(null, function(parameters) {
                 App.Api.call('lunch', 'PUT', parameters, function(result) {
-                    location = '#/lunch/' + result;
+                    location.href = '#/lunch/' + result;
+                    // TODO: we should find a better way to avoid modal window bug
+                    location.reload('#/lunch/' + result);
                 }, function(error) {
                     App.alertWithRequestError(error);
                 });
@@ -399,7 +401,7 @@ App.ApplicationRoute = Ember.Route.extend({
         logout: function() {
             App.Api.call('logout', 'GET', null, function(result) {
                 App.removeMe();
-                location = '#';
+                location.reload();
             }, function(error) {
                 App.alertWithRequestError(error);
             });
@@ -452,7 +454,9 @@ App.LunchRoute = Ember.Route.extend({
 
             App.confirm('Confirmation', 'Do you really want to delete this lunch?', function() {
                 App.Api.call('lunch', 'DELETE', {lunchId: controller.content.lunchId}, function(result) {
-                    location = '#';
+                    location.href = '#';
+                    // TODO: we should find a better way to avoid modal window bug
+                    location.reload();
                 }, function(error) {
                     App.alertWithRequestError(error);
                 });
@@ -588,7 +592,7 @@ App.ApplicationView = Ember.View.extend({
         $("#calendar").datepicker({
             dateFormat: 'yymmdd',
             onSelect: function(date) {
-                location = "#/date/" + date;
+                location.href = "#/date/" + date;
             }
         });
     }
