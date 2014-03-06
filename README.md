@@ -8,6 +8,9 @@ Documentation: http://sobremesa.barbayar.net/documentation
 (n.) the time spent around the table after lunch or dinner, talking to the people you shared the meal with; time to digest and savor both food and friendship
 
 ## Using
+##### 0. Requirements
+PHP 5.4.* and above
+
 ##### 1. Download
 `git clone git@github.com:Barbayar/Sobremesa.git`<br>
 or `git clone https://github.com/Barbayar/Sobremesa.git`
