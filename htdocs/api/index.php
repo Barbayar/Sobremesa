@@ -9,7 +9,7 @@ foreach ($classes as $class) {
 date_default_timezone_set('UTC');
 ini_set('error_log', '../../data/error.log');
 ini_set('session.cookie_lifetime', 604800); // 7 days
-ini_set('session.gc_maxlifetime', 604800); // 7 days
+ini_set('session.gc_maxlifetime', 65535); // max value
 session_start();
 
 $app = new \Slim\Slim();
