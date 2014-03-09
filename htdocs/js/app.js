@@ -593,11 +593,39 @@ App.ProfileRoute = Ember.Route.extend({
 App.ApplicationView = Ember.View.extend({
     didInsertElement : function(){
         this._super();
-        $("#calendar").datepicker({
+        $('#calendar').datepicker({
             dateFormat: 'yymmdd',
             onSelect: function(date) {
-                location.href = "#/date/" + date;
+                location.href = '#/date/' + date;
             }
         });
+    }
+});
+
+App.IndexView = Ember.View.extend({
+    didInsertElement : function(){
+        this._super();
+        $('[rel="tooltip"]').tooltip();
+    }
+});
+
+App.LunchView = Ember.View.extend({
+    didInsertElement : function(){
+        this._super();
+        $('[rel="tooltip"]').tooltip();
+    }
+});
+
+App.DateView = Ember.View.extend({
+    didInsertElement : function(){
+        this._super();
+        $('[rel="tooltip"]').tooltip();
+    }
+});
+
+App.ProfileView = Ember.View.extend({
+    didInsertElement : function(){
+        this._super();
+        $('[rel="tooltip"]').tooltip();
     }
 });

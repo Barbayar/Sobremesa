@@ -161,7 +161,7 @@
                     {{test}}
                     <li class="{{unbound timelineClass null}}">
                         <div class="timeline-badge">
-                            <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle">
+                            <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle" rel="tooltip" title="{{unbound displayName}}">
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
@@ -328,9 +328,9 @@
                             <strong>Number of People</strong><br>
                             {{minPeople}} ~ {{maxPeople}}<br><br>
                             <strong>Members</strong><br>
-                            <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle"> {{displayName}} (Host)
+                            <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle" rel="tooltip" title="{{unbound displayName}} (Host)">
                             {{#each members}}
-                            <img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle"> {{displayName}}
+                                &nbsp;<img src="{{unbound avatarURL data 50}}" alt="{{unbound displayName}}" class="img-circle" rel="tooltip" title="{{unbound displayName}}">
                             {{/each}}
                         </div>
                     </div>
