@@ -208,7 +208,13 @@ class SLComment extends SLResource
 
         $lunch = $this->table('lunch')->get($this->_lunchId);
         $lunch['newComment'] = $content;
-        $this->notify('commentAdded', array($lunch['userId']), $lunch);
+        $commenterIds = array($lunch['userId']);
+        $comments = $this->table('comment')->getByLunchId($this->_lunchId);
+        foreach ($comments as $comment) {
+            $commenterIds[] = $comments['userId'];
+        }
+
+        $this->notify('commentAdded', array_unique($commenterIds), $lunch);
 
         return $commentId;
     }
