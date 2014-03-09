@@ -2,6 +2,7 @@
 abstract class SLResource
 {
     private $_tables = array();
+    private $_notification = null;
 
     private function _validateParameters($action, $parameters)
     {
@@ -42,6 +43,16 @@ abstract class SLResource
         $this->_tables[$tableName] = $table;
 
         return $this->_tables[$tableName];
+    }
+
+    protected function notify($event, $userIds, $data)
+    {
+        if (is_null($this->_notification)) {
+            $this->_notification = new SLNotification();
+        }
+
+        $users = $this->table('user')->getByUserIds($userIds);
+        $this->_notification->$event($users, $data);
     }
 
     public function run($action, $parameters)

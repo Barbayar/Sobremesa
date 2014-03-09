@@ -1,0 +1,56 @@
+<?php
+class SLNotification
+{
+    private $_me = null;
+
+    private function _send($users, $message)
+    {
+        $headers = 'From: noreply@sobremesa';
+
+        foreach ($users as $user) {
+            if ($user['userId'] !== $this->_me['userId']) {
+                mail($user['email'], 'Notification from Sobremesa', $message, $headers);
+            }
+        }
+    }
+
+    public function __construct()
+    {
+        $this->_me = SLAuthentication::getMe();
+    }
+
+    public function lunchAdded($users, $data)
+    {
+        // broadcast to all users
+    }
+
+    public function lunchRemoved($users, $data)
+    {
+        $message = $data['theme'] . ' is cancelled by ' . $this->_me['displayName'];
+        $this->_send($users, $message);
+    }
+
+    public function lunchUpdated($users, $data)
+    {
+        $message =  $data['theme'] . ' is updated by ' . $this->_me['displayName'];
+        $this->_send($users, $message);
+    }
+
+    public function commentAdded($users, $data)
+    {
+        $message =  $this->_me['displayName'] . ' commented on ' . $data['theme'] . "\r\n" . $data['newComment'];
+        $this->_send($users, $message);
+    }
+
+    public function memberAdded($users, $data)
+    {
+        $message =  $this->_me['displayName'] . ' joined in ' . $data['theme'];
+        $this->_send($users, $message);
+    }
+
+    public function memberRemoved($users, $data)
+    {
+        $message =  $this->_me['displayName'] . ' cancelled joining in ' . $data['theme'];
+        $this->_send($users, $message);
+    }
+}

@@ -119,6 +119,9 @@ class SLMember extends SLResource
 
         $this->table('member')->add($this->_lunchId, $me['userId']);
 
+        $lunch = $this->table('lunch')->get($this->_lunchId);
+        $this->notify('memberAdded', array($lunch['userId']), $lunch);
+
         return true;
     }
 
@@ -153,6 +156,9 @@ class SLMember extends SLResource
         }
 
         $this->table('member')->remove($this->_lunchId, $me['userId']);
+
+        $lunch = $this->table('lunch')->get($this->_lunchId);
+        $this->notify('memberRemoved', array($lunch['userId']), $lunch);
 
         return true;
     }

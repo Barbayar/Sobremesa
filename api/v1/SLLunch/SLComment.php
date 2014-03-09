@@ -204,7 +204,13 @@ class SLComment extends SLResource
         $me = SLAuthentication::getMe();
         $content = $parameters['content'];
 
-        return $this->table('comment')->add($this->_lunchId, $me['userId'], $content);
+        $commentId = $this->table('comment')->add($this->_lunchId, $me['userId'], $content);
+
+        $lunch = $this->table('lunch')->get($this->_lunchId);
+        $lunch['newComment'] = $content;
+        $this->notify('commentAdded', array($lunch['userId']), $lunch);
+
+        return $commentId;
     }
 
     /**

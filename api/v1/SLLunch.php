@@ -444,6 +444,22 @@ class SLLunch extends SLResource
 
         $this->table('lunch')->update($lunchId, $me['userId'], $theme, $location, $description, $beginTime, $endTime, $minPeople, $maxPeople);
 
+        $members = $this->table('member')->getByLunchId($lunchId);
+        $memberIds = array();
+        foreach ($members as $member) {
+            $memberIds[] = $member['userId'];
+        }
+        $this->notify('lunchUpdated', $memberIds, array(
+            'lunchId' => $lunchId,
+            'theme' => $theme,
+            'location' => $location,
+            'description' => $description,
+            'beginTime' => $beginTime,
+            'endTime' => $endTime,
+            'minPeople' => $minPeople,
+            'maxPeople' => $maxPeople,
+        ));
+
         return true;
     }
 
@@ -533,7 +549,20 @@ class SLLunch extends SLResource
             throw new SLException(SLHTTPResponseCodes::BAD_REQUEST, SLErrorMessages::INVALID_PARAMETER . " (now > $endTime)");
         }
 
-        return $this->table('lunch')->add($me['userId'], $theme, $location, $description, $beginTime, $endTime, $minPeople, $maxPeople);
+        $lunchId = $this->table('lunch')->add($me['userId'], $theme, $location, $description, $beginTime, $endTime, $minPeople, $maxPeople);
+
+        $this->notify('lunchAdded', null, array(
+            'lunchId' => $lunchId,
+            'theme' => $theme,
+            'location' => $location,
+            'description' => $description,
+            'beginTime' => $beginTime,
+            'endTime' => $endTime,
+            'minPeople' => $minPeople,
+            'maxPeople' => $maxPeople,
+        ));
+
+        return $lunchId;
     }
 
     /**
@@ -573,9 +602,17 @@ class SLLunch extends SLResource
             throw new SLException(SLHTTPResponseCodes::FORBIDDEN, SLErrorMessages::PERMISSION_ERROR);
         }
 
+        $members = $this->table('member')->getByLunchId($lunchId);
+        $memberIds = array();
+        foreach ($members as $member) {
+            $memberIds[] = $member['userId'];
+        }
+
         $this->table('comment')->removeByLunchId($lunchId);
         $this->table('member')->removeByLunchId($lunchId);
         $this->table('lunch')->remove($lunchId);
+
+        $this->notify('lunchRemoved', $memberIds, $lunch);
 
         return true;
     }
