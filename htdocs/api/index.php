@@ -21,6 +21,7 @@ $app->run();
 
 function response($httpResponseCode, $result)
 {
+    header('Content-Type: application/json; charset=utf-8');
     http_response_code($httpResponseCode);
     die(json_encode(array(
         'result' => $result,
@@ -31,11 +32,11 @@ function isAuthenticationRequired($uri)
 {
     $resourceName = strtolower($uri[0]);
 
-    if ($resourceName !== 'login' && $resourceName !== 'logout') {
-        return true;
+    if ($resourceName === 'login') {
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 function main($version, $uri)

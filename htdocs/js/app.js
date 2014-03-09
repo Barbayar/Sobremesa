@@ -26,7 +26,11 @@ App.Api = {
                 callback(data.result);
             }
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            if (jqXHR.status == '401' && !fromLogin) {
+            if (jqXHR.status == '300') {
+                location.href = jqXHR.responseJSON.result;
+
+                return;
+            } else if (jqXHR.status == '401' && !fromLogin) {
                 App.login();
 
                 return;

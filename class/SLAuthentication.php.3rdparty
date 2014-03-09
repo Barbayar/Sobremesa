@@ -1,0 +1,12 @@
+<?php
+class SLAuthentication
+{
+    public static function getMe()
+    {
+        if (isset($_SESSION['me'])) {
+            return $_SESSION['me'];
+        }
+
+        response(SLHTTPResponseCodes::REDIRECT, 'login/');
+    }
+}
