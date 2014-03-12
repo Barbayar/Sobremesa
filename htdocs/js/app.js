@@ -362,7 +362,10 @@ App.LunchFormController = Ember.ObjectController.extend({
 });
 
 App.lunchForm = function(model, callback) {
-    var parameters = {callback: callback};
+    var parameters = {
+        formTitle: 'Create',
+        callback: callback
+    };
 
     if (model) {
         parameters = {
