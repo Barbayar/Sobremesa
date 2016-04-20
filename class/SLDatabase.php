@@ -2,7 +2,7 @@
 class SLDatabase
 {
     private static $_instance = null;
-    private static $_databasePath = '../../data/database.sqlite';
+    private static $_databasePath = __DIR__ . '/../data/database.sqlite';
     private static $_createTableQueries = array(
         'CREATE TABLE lunch (
             lunchId INTEGER PRIMARY KEY,
