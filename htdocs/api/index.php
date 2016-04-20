@@ -1,13 +1,13 @@
 <?php
-require_once('../../vendor/autoload.php');
+require_once(__DIR__ . '/../../vendor/autoload.php');
 
-$classes = glob('../../class/*.php');
+$classes = glob(__DIR__ . '/../../class/*.php');
 foreach ($classes as $class) {
-    require_once($class);   
+    require_once($class);
 }
 
 date_default_timezone_set('UTC');
-ini_set('error_log', '../../data/error.log');
+ini_set('error_log', __DIR__ . '/../../data/error.log');
 ini_set('session.cookie_lifetime', 604800); // 7 days
 ini_set('session.gc_maxlifetime', 604800); // 7 days
 session_start();
@@ -44,7 +44,7 @@ function main($version, $uri)
     global $app;
     $action = strtolower($app->request->getMethod());
 
-    if (!file_exists("../../api/$version")) {
+    if (!file_exists(__DIR__ . "/../../api/$version")) {
         response(SLHTTPResponseCodes::BAD_REQUEST, SLErrorMessages::INVALID_VERSION . " ($version)");
     }
 
@@ -56,7 +56,7 @@ function main($version, $uri)
         $action .= ucfirst(array_pop($uri));
     }
 
-    $resourcePath = "../../api/$version";
+    $resourcePath = __DIR__ . "/../../api/$version";
     $constructParameters = array();
     while (count($uri) !== 1) {
         $resourceName = ucfirst(array_shift($uri));
@@ -90,7 +90,7 @@ function main($version, $uri)
         $resourceKlass = new ReflectionClass($resourceClass);
         $resource = $resourceKlass->newInstanceArgs($constructParameters);
         $result = $resource->run($action, $_GET);
-        
+
         response(SLHTTPResponseCodes::OK, $result);
     } catch (Exception $error) {
         if ($error instanceof SLException) {
